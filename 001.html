@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>洪流将至</title>
+    <style>
+        /* general styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        @font-face {
+            src: url("https://www.axis-praxis.org/fonts/webfonts/MetaVariableDemo-Set.woff2")
+                format("woff2");
+            font-family: "Meta";
+            font-style: normal;
+            font-weight: normal;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            align-items: center;
+            background-color: #ffd54f;
+            display: flex;
+            font-family: -apple-system, 
+                BlinkMacSystemFont, 
+                "Segoe UI", 
+                Roboto, 
+                Oxygen-Sans, 
+                Ubuntu, 
+                Cantarell, 
+                "Helvetica Neue", 
+                sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            justify-content: space-evenly;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        main {
+            transition: all 0.8s;
+            -webkit-text-stroke: 3px #ffffff;
+            font-variation-settings: "wght" 900, "ital" 1;
+            font-size: 6rem;
+            text-align: center;
+            color: transparent;
+            font-family: "Meta", sans-serif;
+            text-shadow: 2px 0px 0px #07bccc,
+                4px 0px 0px #e601c0,
+                6px 0px 0px #e9019a,
+                12px 0px 10px #482896;
+            cursor: pointer;
+        }
+
+        main:hover {
+            font-variation-settings: "wght" 100, "ital" 0;
+            text-shadow: none;
+        }
+
+        .container {
+            color: #333;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: normal;
+            letter-spacing: .125rem;
+            text-transform: uppercase;
+        }
+
+        li {
+            display: inline-block;
+            font-size: 1.5em;
+            list-style-type: none;
+            padding: 1em;
+            text-transform: uppercase;
+        }
+
+        li span {
+            display: block;
+            font-size: 4.5rem;
+        }
+
+        .emoji {
+            display: none;
+            padding: 1rem;
+        }
+
+        .emoji span {
+            font-size: 4rem;
+            padding: 0 .5rem;
+        }
+
+        @media all and (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            li {
+                font-size: 1.125rem;
+                padding: .75rem;
+            }
+            
+            li span {
+                font-size: 3.375rem;
+            }
+        }
+
+        #choices {    /*下拉框属性设置*/
+            font-size: 24px;
+            font-style: italic;
+            font-family: 'Courier New', Courier, monospace;
+            font: optional;
+            background-color: #ffd54f;
+        }
+
+        #headline {   /*标题与下拉框保持一定行间距*/
+            margin: 24px;
+        }
+        #settime{
+            background: #ffd54f;
+            font-size: 20px;
+            border-width: 1px;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <h1 id="headline">Countdown to my death:</h1>
+        <form name="st">
+            <input type="datetime-local" name="settime" id="settime" value="2021-12-25T00:00" onchange="changetime()">
+            <select id="choices" onchange="choose()">
+                <option value ="day" selected="selected">day</option>
+                <option value ="hour">hour</option>
+                <option value=",minute">minute</option>
+                <option value="second">second</option>
+            </select>
+        </form>
+        
+        <div id="countdown">
+          <ul>
+            <li><span id="days"></span>days</li>
+            <li><span id="hours"></span>Hours</li>
+            <li><span id="minutes"></span>Minutes</li>
+            <li><span id="seconds"></span>Seconds</li>
+          </ul>
+        </div>
+        <div id="countdown1">
+            <ul>
+              <li><span id="hours1"></span>Hours</li>
+              <li><span id="minutes1"></span>Minutes</li>
+              <li><span id="seconds1"></span>Seconds</li>
+            </ul>
+        </div>
+        <div id="countdown2">
+            <ul>
+                <li><span id="minutes2"></span>Minutes</li>
+                <li><span id="seconds2"></span>Seconds</li>
+            </ul>
+        </div>
+        <div id="countdown3">
+            <ul>
+                <li><span id="seconds3"></span>Seconds</li>
+            </ul>
+        </div>
+        <div id="content" class="emoji">
+          <span>🥳</span>
+          <span>🎉</span>
+          <span>🎂</span>
+        </div>
+        <main>CALM DOWN </main>
+      </div>
+
+      <script>
+          let birthday = st.settime.value;
+          let countDown = new Date(birthday).getTime();
+          
+          function choose(){
+            var index = document.getElementById("choices").selectedIndex;
+            if(index == 0){
+                document.getElementById("countdown").style.display="block";
+                document.getElementById("countdown1").style.display="none";
+                document.getElementById("countdown2").style.display="none";
+                document.getElementById("countdown3").style.display="none";
+            }
+            else if(index == 1){
+                document.getElementById("countdown").style.display="none";
+                document.getElementById("countdown1").style.display="block";
+                document.getElementById("countdown2").style.display="none";
+                document.getElementById("countdown3").style.display="none";
+            }
+            else if(index == 2){
+                document.getElementById("countdown").style.display="none";
+                document.getElementById("countdown1").style.display="none";
+                document.getElementById("countdown2").style.display="block";
+                document.getElementById("countdown3").style.display="none";
+            }
+            else if(index == 3){
+                document.getElementById("countdown").style.display="none";
+                document.getElementById("countdown1").style.display="none";
+                document.getElementById("countdown2").style.display="none";
+                document.getElementById("countdown3").style.display="block";
+            }
+          }
+
+          function changetime(){
+            birthday = st.settime.value;
+            countDown = new Date(birthday).getTime();
+          }
+         
+          (function () {
+            const second = 1000,
+                    minute = second * 60,
+                    hour = minute * 60,
+                    day = hour * 24;
+            choose();
+            // let birthday = "Dec 18, 2021 00:00:00",
+            // let birthday = "2021-12-16-20-20-20",
+            // let birthday = st.settime.value,
+                countDown = new Date(birthday).getTime();
+            let x = setInterval(function() {    
+                let now = new Date().getTime(),
+                    distance = countDown - now;
+                document.getElementById("days").innerText = Math.floor(distance / (day)),
+                document.getElementById("hours").innerText = Math.floor((distance % (day)) / (hour)),
+                document.getElementById("minutes").innerText = Math.floor((distance % (hour)) / (minute)),
+                document.getElementById("seconds").innerText = Math.floor((distance % (minute)) / second);
+
+                document.getElementById("hours1").innerText = Math.floor((distance / (hour))),
+                document.getElementById("minutes1").innerText = Math.floor((distance % (hour)) / (minute)),
+                document.getElementById("seconds1").innerText = Math.floor((distance % (minute)) / second);
+                
+
+                document.getElementById("minutes2").innerText = Math.floor((distance / (minute)),
+                document.getElementById("seconds2").innerText = Math.floor((distance % (minute)) / second));
+
+                document.getElementById("seconds3").innerText = Math.floor((distance / second));
+
+                //do something later when date is reached
+                if (distance < 0) {
+                let headline = document.getElementById("headline"),
+                    countdown = document.getElementById("countdown"),
+                    content = document.getElementById("content");
+
+                headline.innerText = "It's my death!";
+                countdown.style.display = "none";
+                content.style.display = "block";
+
+                clearInterval(x);
+                }
+                //seconds
+            }, 0)
+            }());
+      </script>
+</body>
+</html>
