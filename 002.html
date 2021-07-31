@@ -49,6 +49,18 @@
     </style>
 </head>
 <body>
-    <main>HELLO WORLD</main>
+    <div class="aaa" style="text-align: center;">
+        <input id="text" type="text" style="background: #ffd54f;">
+        <button id="button" style="background: #ffd54f;" onclick="changetext()">OK</button>
+        <main id="main">HELLO WORLD</main>
+        <br>
+    </div>
+    <script>
+        function changetext(){
+            document.getElementById("main").innerText=document.getElementById("text").value;
+            document.getElementById("text").remove();
+            document.getElementById("button").remove();
+        }
+    </script>
 </body>
 </html>
