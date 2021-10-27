@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html {
+        font-family: Roboto, Helvetica, Arial, sans-serif;
+        font-size: 62.5%;
+        font-weight: normal;
+        }
+
+        body {
+        margin: 0;
+        }
+
+        header {
+        padding: 1.2rem 2.4rem;
+        background-color: #2196f3;
+        }
+
+        h1 {
+        margin: 0;
+        font-size: 4.8rem;
+        font-weight: normal;
+        color: white;
+        }
+
+        main {
+        display: flex;
+        flex-flow: row wrap;
+        padding: 0 1.2rem;
+        }
+
+        button {
+        margin: 0 12px;
+        }
+
+        #actions {
+        flex: 3 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 1.2rem;
+        }
+
+        #actions > label {
+        margin-right: 0.6rem;
+        }
+
+        #options {
+        flex: 1 0 0;
+        padding: 1.2rem;
+        min-width: 20rem;
+        }
+
+        #options > label {
+        width: 100%;
+        }
+
+        hr {
+        margin: 0;
+        border: none;
+        width: 100%;
+        height: 0;
+        }
+
+        mark {
+        margin: -0.2rem;
+        border: 0.2rem solid transparent;
+        border-radius: 0.4rem;
+        color: transparent;
+        background: transparent;
+        }
+
+        #text {
+        position: relative;
+        flex: 3 0 0;
+        padding: 0 1.2rem;
+        transition: height 0.3s;
+        }
+
+        textarea,
+        #highlights {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        border: solid 0.1rem rgba(0, 0, 0, 0.54);
+        border-radius: 0.4rem;
+        padding: 1.3rem;
+        font-family: Roboto, Helvetica, Arial, sans-serif;
+        font-size: 1.6rem;
+        font-weight: normal;
+        line-height: 2rem;
+        outline: none;
+        transition: height 0.3s;
+        }
+
+        textarea {
+        box-sizing: border-box;
+        width: calc(100% - 2.4rem);
+        height: 100%;
+        background: transparent;
+        resize: none;
+        }
+
+        textarea:focus {
+        border: solid 0.2rem #2196f3;
+        padding: 1.2rem;
+        }
+
+        #highlights {
+        z-index: -1;
+        box-sizing: border-box;
+        width: calc(100% - 2.4rem);
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        color: transparent;
+        overflow-x: hidden;
+        overflow-y: auto;
+        }
+
+        ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        }
+
+        #list {
+        position: relative;
+        flex: 1 0 0;
+        padding: 0 1.2rem;
+        min-width: 20rem;
+        min-height: calc(100vh - 24rem);
+        transition: height 0.3s;
+        }
+
+        .item {
+        position: absolute;
+        transition: top 0.3s, opacity 0.3s;
+        animation: add 0.3s;
+        }
+
+        .item > label {
+        cursor: pointer;
+        }
+
+        .hidden {
+        display: none;
+        }
+
+        .count,
+        .word {
+        display: inline-block;
+        border: solid 0.2rem;
+        box-shadow: inset 20rem 2rem transparent;
+        transition: border 0.3s, background 0.3s, box-shadow 0.3s;
+        }
+
+        .hidden:checked ~ .count,
+        .hidden:checked ~ .word {
+        box-shadow: inset 20rem 2rem white;
+        }
+
+        .count {
+        border-radius: 50%;
+        min-width: 1.8rem;
+        text-align: center;
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+        }
+
+        .word {
+        padding: 0 0.2rem;
+        border-radius: 0.4rem;
+        font-size: 1.6rem;
+        }
+
+        .obsolete {
+        opacity: 0;
+        }
+
+        footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1.2rem;
+        padding: 2.4rem 3.6rem;
+        color: #555;
+        background-color: #eee;
+        font-size: 1.4rem;
+        }
+
+        footer > div:last-child {
+        text-align: end;
+        }
+
+        a {
+        color: black;
+        text-decoration: none;
+        }
+
+        @keyframes add {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Duplicate Word Finder</h1>
+      </header>
+      <main>
+        <div id="actions">
+          <div>
+            <button id="copy" class="pure-material-button-contained">Copy</button>
+            <button id="clear" class="pure-material-button-text">Clear</button>
+          </div>
+          <label class="pure-material-switch">
+                  <input id="spellcheck" type="checkbox" checked>
+                  <span>Spell Check</span>
+              </label>
+        </div>
+        <div id="options">
+          <label class="pure-material-slider">
+            <input id="length" type="range" min="1" max="10" value="4">
+            <span>Minimum Word Length: <output>4</output></span>
+          </label>
+        </div>
+        <hr>
+        <div id="text">
+          <textarea>
+      Paste your text by pressing Ctrl+V or ⌘+V. (Once you click here, these instructions will be cleared for your convenience ;)
+      
+      The slider on the top right can be used to adjust the minimum length of words to detect. The default setting is 4, so words like 'and', 'for', 'the', etc. won't pollute the analysis. The duplicate words can be found below the slider highlighted by various colors. The list is sorted by the number of occurrence starting with the highest. The highlighting for any individual word can be turned off by clicking on the word in the list.
+      
+      You can edit your text here, duplicates are detected real time. When you're finished editing, you can copy or clear the result using the corresponding buttons. You can also turn off the spell checker if you don't need it.
+      
+      ~~~
+      
+      I often find myself sending emails and messages consisting of two or three sentences. This is where I usually commit an unintentional word repetition, but only realize it after hitting send. This tool comes handy for such cases, and you're free to use it for your benefit as well! :)
+      </textarea>
+          <div id="highlights"></div>
+        </div>
+        <ol id="list"></ol>
+      </main>
+      <footer>
+        <div>
+          Created by Bence Szabó (finnhvman)<br/>
+          <br/>
+          <a href="https://twitter.com/finnhvman" target="_top">Twitter</a> &nbsp; | &nbsp;
+          <a href="https://www.linkedin.com/in/finnhvman/" target="_top">LinkedIn</a> &nbsp; | &nbsp;
+          <a href="https://codepen.io/finnhvman/" target="_top">CodePen</a>
+        </div>
+        <div>
+          Created with<br/>
+          <br/>
+          <a href="https://codepen.io/collection/nZKBZe/" target="_top">Pure CSS Material Components</a>
+        </div>
+      </footer>
+      <template>
+          <li class="item">
+              <label>
+                  <input class="hidden" type="checkbox">
+                  <span class="count"></span>
+                  <span class="word"></span>
+              </label>
+          </li>
+      </template>
+
+    <script>
+        const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+
+        const copy = document.querySelector("#copy");
+        const clear = document.querySelector("#clear");
+        const spellcheck = document.querySelector("#spellcheck");
+        const textarea = document.querySelector("textarea");
+        const highlights = document.querySelector("#highlights");
+        const length = document.querySelector("#length");
+        const output = document.querySelector("output");
+        const list = document.querySelector("#list");
+        const template = document.querySelector("template");
+
+        let hiddens = [];
+        let duplicates = {};
+
+        // Text analysis
+        const count = (text, minLength) => {
+        // https://mathiasbynens.be/notes/es-unicode-property-escapes#word
+        const wordRegex = isChrome || isSafari
+        ? new RegExp(`([\\p{Alphabetic}\\p{Mark}\\p{Decimal_Number}\\p{Connector_Punctuation}\\p{Join_Control}]+){${minLength},}`, 'gu')
+        : new RegExp(`(\\w+){${minLength},}`, 'g');
+        let result;
+        const words = {};
+        while ((result = wordRegex.exec(text)) !== null) {
+            const word = result[0].toLowerCase();
+            if (!words[word]) {
+            words[word] = [];
+            }
+            words[word].push(result.index);
+            words[word].push(result.index + word.length);
+        }
+        return words;
+        };
+
+        // Array manipulation
+        const duplicatePass = ([key, value]) => 2 < value.length;
+
+        const occurrenceComparator = ([keyA, valueA], [keyB, valueB]) =>
+        valueB.length - valueA.length;
+
+        const numberComparator = (numberA, numberB) => numberA - numberB;
+
+        const differ = (object, [key, value], index) => {
+        object[key] = {
+            action: object[key] ? "KEEP" : "ADD",
+            word: key,
+            occurrences: value,
+            index
+        };
+        return object;
+        };
+
+        const cleaner = (object, [word, details]) => {
+        if (details.action) {
+            delete details.action;
+            object[word] = details;
+        }
+        return object;
+        };
+
+        const flattener = (array, details) => [...array, ...details.occurrences];
+
+        // DOM manipulation
+        const update = (item, details) => {
+        item.style.zIndex = details.occurrences.length / 2;
+        item.style.top = `${0.6 + details.index * 3}rem`;
+        item.querySelector(".count").textContent = details.occurrences.length / 2;
+        };
+
+        const add = (word, details) => {
+        const node = document.importNode(template.content, true);
+        list.appendChild(node);
+        const item = list.lastElementChild;
+        item.id = `word-${word}`;
+        const hidden = item.querySelector(".hidden");
+        hidden.name = word;
+        hidden.checked = hiddens.includes(word);
+        hidden.addEventListener("change", handleToggle);
+        item.querySelector(".word").textContent = word;
+        update(item, details);
+        };
+
+        const keep = (word, details) => {
+        const item = document.querySelector(`#word-${word}`);
+        update(item, details);
+        };
+
+        const markObsolete = word => {
+        document.querySelector(`#word-${word}`).classList.add("obsolete");
+        };
+
+        const remove = item => item.remove();
+
+        const removeObsolete = () => {
+        document.querySelectorAll(".obsolete").forEach(remove);
+        };
+
+        const render = ([word, details]) => {
+        if (details.action === "ADD") {
+            add(word, details);
+        } else if (details.action === "KEEP") {
+            keep(word, details);
+        } else {
+            markObsolete(word);
+        }
+        };
+
+        const getHue = word => {
+        return (
+            360 -
+            360 / Object.keys(duplicates).length * duplicates[word.toLowerCase()].index
+        );
+        };
+
+        const getHSL = word => {
+        const hue = getHue(word);
+        return `hsl(${hue + 20}, 100%, ${180 < hue && hue < 360 ? 80 : 50}%)`;
+        };
+
+        const colorize = word => {
+        const color = getHSL(word);
+        const count = document.querySelector(`#word-${word} .count`);
+        const wordElement = document.querySelector(`#word-${word} .word`);
+        count.style.borderColor = color;
+        count.style.backgroundColor = color;
+        wordElement.style.borderColor = color;
+        wordElement.style.backgroundColor = color;
+        };
+
+        const highlight = (occurrence, index, occurrences) => {
+        let node;
+        if (index < occurrences.length - 1) {
+            if (index % 2) {
+            const word = textarea.value.substring(occurrence, occurrences[index + 1]);
+            node = document.createElement("mark");
+            node.textContent = word;
+            if (!hiddens.includes(word.toLowerCase())) {
+                const color = getHSL(word);
+                node.style.background = color;
+                node.style.border = `0.2rem solid ${color}`;
+            }
+            } else {
+            const text = textarea.value.substring(occurrence, occurrences[index + 1]);
+            node = document.createTextNode(text);
+            }
+        } else {
+            const text = textarea.value.substring(occurrence);
+            node = document.createTextNode(text + "\r\n\r\n");
+        }
+        highlights.appendChild(node);
+        };
+
+        const handleChange = () => {
+        // Count words
+        const words = count(textarea.value, length.value);
+
+        // Diff word stats with previous
+        const diff = Object.entries(words)
+            .filter(duplicatePass)
+            .sort(occurrenceComparator)
+            .reduce(differ, duplicates);
+
+        // Render items
+        Object.entries(diff).forEach(render);
+
+        // Clean obsolete from duplicates
+        duplicates = Object.entries(diff).reduce(cleaner, {});
+
+        // Adjust height of list
+        list.style.height = `${1.2 + Object.keys(duplicates).length * 3}rem`;
+
+        // Colorize items
+        Object.keys(duplicates).forEach(colorize);
+
+        // Flatten occurrences
+        const occurrences = Object.values(duplicates)
+            .reduce(flattener, [0])
+            .sort(numberComparator);
+
+        // Highlight
+        while (highlights.firstChild) {
+            highlights.removeChild(highlights.firstChild);
+        }
+        occurrences.forEach(highlight);
+
+        // Remove
+        window.setTimeout(removeObsolete, 400);
+        };
+
+        const handleToggle = event => {
+        const word = event.target.name;
+        if (event.target.checked) {
+            if (!hiddens.includes(word)) {
+            hiddens.push(word);
+            }
+        } else {
+            const index = hiddens.indexOf(word);
+            if (0 <= index) {
+            hiddens.splice(index, 1);
+            }
+        }
+        handleChange();
+        };
+
+        copy.addEventListener("click", () => {
+        textarea.select();
+        document.execCommand("copy");
+        });
+
+        clear.addEventListener("click", () => {
+        textarea.value = "";
+        textarea.focus();
+        handleChange();
+        });
+
+        spellcheck.addEventListener("change", event => {
+        textarea.setAttribute("spellcheck", event.target.checked.toString());
+        const { value } = textarea;
+        textarea.value = value + " ";
+        textarea.value = value;
+        });
+
+        textarea.addEventListener("scroll", event => {
+        highlights.scrollTop = event.target.scrollTop;
+        });
+
+        textarea.addEventListener(
+        "focus",
+        () => {
+            textarea.value = "";
+            handleChange();
+        },
+        {
+            once: true
+        }
+        );
+
+        textarea.addEventListener("input", handleChange);
+        length.addEventListener("input", handleChange);
+        length.addEventListener("input", () => (output.textContent = length.value));
+
+        handleChange();
+    </script>
+</body>
+</html>
