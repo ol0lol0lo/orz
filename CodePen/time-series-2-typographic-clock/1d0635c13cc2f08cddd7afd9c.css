@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500')
+
+body
+	overflow: hidden
+	height: 100vh
+	width: 100vw
+
+.series-menu
+	position: fixed
+	left: 0
+	top: 0
+	width: 250px
+	height: 100%
+	box-sizing: border-box
+	font-family: 'Roboto', sans-serif
+	transform: translateX(-250px)
+	box-shadow: 2px 2px 20px 0 rgba(black, 0.1)
+	transition: transform .3s cubic-bezier(.55,.54,.69,1.05) 
+
+	.opaque
+		position: fixed
+		width: 0
+		height: 100%
+		z-index: -1
+		transition: background .3s ease-in
+
+	*
+		box-sizing: border-box
+
+	.series-menu-inner
+		background: #fefefe
+		height: 100%
+		overflow: hidden
+
+	.series-menu-content
+		overflow-y: scroll
+		width: calc(100% + 14px)
+		height: 100%
+		padding: 10px 15px
+
+	a
+		position: relative
+		width: 100%
+		text-decoration: none
+		color: #333
+	
+	img
+		width: 100%
+
+	h1
+		margin: 10px 0 0 0
+		font-weight: 500
+		font-size: 25px
+
+	h2
+		font-size: 18px
+		margin: 20px 0 8px 0
+		font-weight: 500
+
+	p
+		margin: 3px 0
+		font-size: 14px
+		font-weight: 400
+
+	button
+		position: absolute
+		background: #fefefe
+		border: none
+		width: 100px
+		height: 40px
+		left: 100%
+		top: -30px
+		font-size: 16px
+		font-weight: 500
+		cursor: pointer
+		background: lighten(#26d37f, 10%)
+		box-shadow: 2px 2px 20px 0 rgba(black, 0.1)
+		transform: rotate(90deg)
+		transform-origin: bottom left
+		color: #222
+		line-height: 36px
+		font-weight: 400
+
+		&:focus,
+		&:hover
+			outline: none
+			background: #26d37f
+			
+
+	&.reveal
+		transform: translateX(0)
+		
+		.opaque
+			width: calc(100vw + 250px)
+			background: rgba(black, 0.2)
+		
+		button
+			background: lighten(red, 20%)
+			&:focus,
+			&:hover
+				background: lighten(red, 15%)
+			> span
+				transform: rotate(45deg)

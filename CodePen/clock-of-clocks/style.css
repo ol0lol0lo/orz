@@ -1,0 +1,92 @@
+.container{
+	width: calc(35px*22);
+	/*height: 231px;*/
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+
+}
+
+.container > div {
+	display: inline-block;
+	/*height: 231px;*/
+	margin: 0;
+	padding: 0;
+	float: left;
+	/*border: 1px #000 solid;*/
+}
+
+
+
+.container > div.gap, .container > div.doispontos {
+	width: 35px;
+}
+
+.container > div.numero {
+	width: calc(35px*3);
+} 
+
+.container > div.gaphorizontal {
+	width: calc(35px*29);
+	
+}
+
+.container > div > div{
+	width: 35px;
+	height: 35px;
+	background-color: #DFDFDF;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0;
+	padding: 0;
+	float: left;
+	position: relative;
+}
+
+.container > div.doispontos > div.pontospiscadores > div{
+	width: 8px;
+	height: 8px;
+	border-radius: 50% 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	background-color: #000;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+
+
+.container > div > div > .ponteiro{
+	position: absolute;
+	background-color: #000;
+	width: calc(35px/10);
+	height: calc(35px/2);
+	left: 50%;
+	-webkit-transition: all 0.3s;
+	-o-transition: all 0.3s;
+	transition: all 0.3s;
+
+	-webkit-transform-origin: 50% 100%;
+	-moz-transform-origin: 50% 100%;
+	-ms-transform-origin: 50% 100%;
+	-o-transform-origin: 50% 100%;
+	transform-origin: 50% 100%;
+	-webkit-transform: rotate(0deg) translateX(-50%);
+	-ms-transform: rotate(0deg) translateX(-50%);
+	-o-transform: rotate(0deg) translateX(-50%);
+	transform: rotate(0deg) translateX(-50%);
+}
+
+
+
+.container > div.numero > div > .ponteiro.a1{-webkit-transform: rotate(360deg); -ms-transform: rotate(360deg); -o-transform: rotate(360deg); transform: rotate(360deg);}
+.container > div.numero > div > .ponteiro.a2{-webkit-transform: rotate(90deg); -ms-transform: rotate(90deg); -o-transform: rotate(90deg); transform: rotate(90deg);}
+.container > div.numero > div > .ponteiro.a3{-webkit-transform: rotate(180deg); -ms-transform: rotate(180deg); -o-transform: rotate(180deg); transform: rotate(180deg);}
+.container > div.numero > div > .ponteiro.a4{-webkit-transform: rotate(270deg); -ms-transform: rotate(270deg); -o-transform: rotate(270deg); transform: rotate(270deg);}
