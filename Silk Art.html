@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+
+	<meta property="og:image" content="http://weavesilk.com/img/silk_thumb.png">
+	<link rel="image_src" type="image/png" href="./Silk Art/silk_thumb.png">
+
+	<meta property="og:description" content="Create beautiful flowing art with Silk.">
+
+	<link rel="shortcut icon" href="http://weavesilk.com/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./Silk Art/normalize.css">
+	<link rel="stylesheet" href="./Silk Art/font-awesome.css">
+	<link rel="stylesheet" href="./Silk Art/ss-social.css">
+	<link rel="stylesheet" href="./Silk Art/site.css">
+
+    <script src="./Silk Art/all.js" async="" crossorigin="anonymous"></script>
+	<script type="text/javascript" async="" src="./Silk Art/analytics.js"></script>
+	<script id="twitter-wjs" src="./Silk Art/widgets.js"></script>
+	<script id="facebook-jssdk" src="./Silk Art/all(1).js"></script>
+	<script async="" src="./Silk Art/u.js"></script>
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-20622056-1');
+    </script>
+
+	<script src="./Silk Art/jquery-1.8.1.min.js"></script>
+	<script src="./Silk Art/jquery.fullscreen.js"></script>
+	<script src="./Silk Art/underscore.min.js"></script>
+	<script src="./Silk Art/knockout-2.2.0.min.js"></script>
+	<script src="./Silk Art/d3.v3.min.js"></script>
+	<script src="./Silk Art/keymaster.js"></script>
+	<script src="./Silk Art/noise.js"></script>
+	<script src="./Silk Art/detect.js"></script>
+	<script src="./Silk Art/site.js"></script>
+	
+	<title>Silk Art</title>
+
+	<script charset="utf-8" src="./Silk Art/button.0d6aa7fd095b2a9dd19cc66c7c2ed64b.js"></script>
+
+	<style type="text/css"></style>
+
+</head>
+
+
+
+
+
+<body data-bind="css: { &#39;iphone&#39;: isIPhone, &#39;right-side-up&#39;: isRightSideUp, &#39;silk-active&#39;: silkActive, &#39;mouse-over-previewable-controls&#39;: mouseOverControls, &#39;mouse-down-on-slider&#39;: mouseDownOnSlider }" class="" style="cursor: url(&quot;chrome-extension://jlgkpaicikihijadgifklkbpdajbkhjo/image/cursors/004.png&quot;), default;">
+	<div id="fb-root" class=" fb_reset">
+		<div style="position: absolute; top: -10000px; width: 0px; height: 0px;">
+			<div></div>
+		</div>
+	</div>
+	
+	<script>(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=408271179236250";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+
+	<div id="canvii-container">
+
+		<div id="main-controls" class="controls-container">
+			<div class="row btn-row share-btn-row">
+				<div class="btn visible" id="btn-new" data-bind="click: clear, css: { visible: notPristine }">
+					<span class="text" style="width: 300px;">New</span>
+				</div>				
+			</div>
+
+			<div class="row">
+				<div class="btn silk-icon visible" data-bind="click: toggleFullscreen, css: { visible: notPristine }">
+					<div class="contents"><p>🔴</p></div>
+					<div class="tt" data-bind="visible: isFullscreen">Fullscreen</div>
+					<div class="tt" data-bind="visible: isNotFullscreen" style="display: none;">Fullscreen</div>
+				</div>
+
+				<div class="btn silk-icon visible" data-bind="click: download, css: { visible: notPristine }">
+					<div class="contents"><p>🟢</p></div>
+					<div class="tt">Save Picture</div>
+				</div>
+
+				<div class="btn silk-icon visible" id="selected-color-icon" data-bind="click: toggleAllControls, css: { visible: notPristine }" style="color: rgb(253, 242, 63);">
+					<div class="contents"><p>🟡</p></div>
+					<div class="tt">Controls</div>
+				</div>
+
+				<div class="btn silk-icon visible" data-bind="click: undo, css: { visible: notPristine, &#39;flip-icon&#39;: nextUndoIsRedo }">
+					<div class="contents"><p>🟣</p></div>
+					<div class="tt" data-bind="visible: nextUndoIsNotRedo">Undo</div>
+					<div class="tt" data-bind="visible: nextUndoIsRedo" style="display: none;">Redo</div>
+				</div>
+			</div>
+
+			<div class="row controls-row download-row" data-bind="css: { visible: showDownload }">
+				<p class="instructions">To save, right click the thumbnail and choose <em>Save Image As...</em>.</p>
+				<img id="download-image">
+			</div>
+
+			<div class="row controls-row color-and-symmetry-row" data-bind="css: { visible: showColorPicker }">
+				<svg id="colorpicker"></svg>
+
+				<div class="label" style="text-align: center;">Drag colors to blend.</div>
+
+				<div id="symmetry-controls">
+					<div class="one-d slider control" id="sym-num-rotations">
+						<div class="slider-bg">
+							<div class="ticks">
+								<div class="tick one"></div>
+								<div class="tick two"></div>
+								<div class="tick three"></div>
+								<div class="tick four"></div>
+								<div class="tick five"></div>
+								<div class="tick six"></div>
+							</div>
+							<div class="slider-bg-pc" style="width: 174px;"></div>
+						</div>
+						<div class="handle" style="left: 175px;"></div>
+						<div class="ghost-handle" style="left: 88px;"></div>
+					</div>
+
+					<div id="sym-num-rotations-label" class="label">6-fold rotational symmetry</div>
+
+					<div class="toggle control on" id="toggle-mirror" data-bind="click: toggleMirror, css: { on: mirror }">
+						<div class="description">Mirror across center</div>
+						<div class="state"><span class="state-on">On</span><span class="state-off">Off</span></div>
+					</div>
+
+					<div class="toggle control" id="toggle-spiral" data-bind="click: toggleSpiral, css: { on: spiral }">
+						<div class="description">Spiral towards center</div>
+						<div class="state"><span class="state-on">On</span><span class="state-off">Off</span></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+				
+
+		<canvas id="silk-2" class="silk-canvas active" width="1920" height="1080" style="width: 1536px; height: 864px;"></canvas><canvas id="silk-1" class="silk-canvas buffer onepacity" width="1920" height="1080" style="width: 1536px; height: 864px;"></canvas>
+		
+		<canvas id="sparks" width="1920" height="1080" style="width: 1536px; height: 864px;"></canvas>
+
+	</div>
+
+	<div id="tips">
+		<div class="tip">Press <b>Space</b> to start a new.</div>
+		<div class="tip">Press <b>Z</b> to undo.</div>
+		<div class="magic tip">Try different colors and symmetries.</div>
+		<div class="tip">Sally forth, you weaver of wonder, sower of silken waves.</div>
+	</div>
+</div>
+</body>
+</html>
