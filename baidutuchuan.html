@@ -8,8 +8,20 @@
     <div align="center" style="margin-top: 20%;">
         <form enctype="multipart/form-data" action="https://sp0.baidu.com/6_R1fD_bAAd3otqbppnN2DJv/Pic/upload?pid=super&app=skin&logid=3813390493" method="post">
             <input type="file" name="file">
-            <input type="submit" value="上传图片">
+            <input onclick="copy()" type="submit" value="上传图片">
         </form>
-    </div>        
+    </div>
+    <script>
+        function copy(){
+            var w = document.createElement('input');
+            w.value = "var index = document.scrollingElement.innerText.indexOf('pic_water');"+"var link = document.scrollingElement.innerText.substr(parseInt(index)).split('\"')[2];"+"console.log(link.replace(/"+'\\'+'\\'+"/g,''));";
+            document.body.appendChild(w);
+            w.select();            
+            // 调用浏览器的复制命令
+            document.execCommand("Copy");           
+            // 将input元素隐藏，通知操作完成！
+            w.style.display='none';
+        }
+    </script> 
 </body>
 </html>
