@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://gitee.com/uomo/image-bed/raw/master/image/Temp/222.ico" type="image/x-icon">
+    <link rel="icon" href="https://gitee.com/uomo/image-bed/raw/master/image/Temp/222.ico" type="image/x-icon">
     <title>囍</title>
     <style>
         /* general styling */
@@ -139,9 +141,9 @@
 <body>
     
     <div class="container">
-        <h1 id="headline">Countdown to my death:</h1>
+        <h1 id="headline">Countdown to my wedding</h1>
         <form name="st">
-            <input type="datetime-local" name="settime" id="settime" value="2021-05-20T00:00" onchange="changetime()">
+            <input type="datetime-local" name="settime" id="settime" value="2022-05-20T00:00" onchange="changetime()">
             <select id="choices" onchange="choose()">
                 <option value ="day" selected="selected">day</option>
                 <option value ="hour">hour</option>
@@ -179,7 +181,7 @@
         <div id="content" class="emoji">
           <span>🥳</span>
           <span>🎉</span>
-          <span>🎂</span>
+          <span>🎊</span>
         </div>
         <main>HAPPY WEDDING</main>
       </div>
@@ -255,11 +257,19 @@
                     countdown = document.getElementById("countdown"),
                     content = document.getElementById("content");
 
-                headline.innerText = "It's my wedding!";
-                countdown.style.display = "none";
-                content.style.display = "block";
+                    document.getElementById("countdown").style.display="none";
+                    document.getElementById("countdown1").style.display="none";
+                    document.getElementById("countdown2").style.display="none";
+                    document.getElementById("countdown3").style.display="none";
+                    document.getElementById("choices").style.display="none";
+                    document.getElementById("settime").style.display="none";
+                    document.getElementById("headline").style.display="none";
 
-                clearInterval(x);
+                    headline.innerText = "It's my wedding!";
+                    countdown.style.display = "none";
+                    content.style.display = "block";
+
+                    clearInterval(x);
                 }
                 //seconds
             }, 0)
