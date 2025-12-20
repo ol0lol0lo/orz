@@ -302,7 +302,7 @@
   #records-table th,
   #records-table td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid var(--border);
   }
   #records-table th {
@@ -317,6 +317,7 @@
   
   .action-buttons {
     display: flex;
+    justify-content: center; /* 水平居中 */
     gap: 6px;
   }
   .action-buttons button {
