@@ -28,7 +28,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // ========== 字段类型切换 ==========
 document.getElementById('new-field-type').addEventListener('change', function () {
   const container = document.getElementById('dict-input-container');
-  container.style.display = (this.value === 'number' || this.value === 'date') ? 'flex' : this.value === 'dict' ? 'block' : 'none';
+  container.style.display = this.value === 'dict' ? 'block' : 'none';
 });
 
 // ========== 字段操作 ==========
@@ -176,7 +176,7 @@ function openEditModal(index) {
   `;
 
   document.getElementById('edit-type').onchange = (e) => {
-    document.getElementById('edit-dict-container').style.display = (e.target.value === 'number' || e.target.value === 'date') ? 'flex' : e.target.value === 'dict' ? 'block' : 'none';
+    document.getElementById('edit-dict-container').style.display = e.target.value === 'dict' ? 'block' : 'none';
   };
 
   document.getElementById('confirm-edit-btn').onclick = () => {
@@ -878,4 +878,3 @@ function updateRecordCount() {
 
 renderFieldList();
 updateRecordCount();
-
