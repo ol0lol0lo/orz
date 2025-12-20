@@ -18,8 +18,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (target === 'submit-panel') {
       renderDynamicForm();
     } else if (target === 'records-panel') {
-        showAllFilters = false;
-        filters = {};
+        showAllFilters = false; // 收起搜索栏
+        filters = {}; // 清空搜索条件
         renderRecordsTable();
     }
   });
@@ -307,6 +307,20 @@ function renderDynamicForm(isEdit = false, record = {}) {
   });
 }
 
+// 生成伪UUID
+function generateTimestampUUID() {
+    // 获取当前时间戳（毫秒）
+    const timestamp = Date.now().toString();
+  
+    // 生成10位随机字符（字母+数字）
+    const randomPart = Array.from({ length: 10 }, () => 
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        .charAt(Math.floor(Math.random() * 62))
+    ).join('');
+  
+    return timestamp + '_' + randomPart;
+}
+
 // ========== 提交记录：取消必填校验 ==========
 async function submitRecord() {
     const formData = new FormData(document.getElementById('dynamic-form'));
@@ -325,10 +339,13 @@ async function submitRecord() {
         record[field.name] = formData.get(field.name) || ''; // 允许为空
       }
     }
+    // 添加uuid作为唯一标志
+    record['uuid'] = generateTimestampUUID();
   
     // ✅ 不再校验必填
     records.push(record);
     localStorage.setItem('records', JSON.stringify(records));
+    document.getElementById('dynamic-form').reset(); // 保存后清空表单
     alert('记录提交成功！');
     updateRecordCount();
 }
@@ -343,9 +360,9 @@ function readFileAsBase64(file) {
 }
 
 // ========== 记录表格 ==========
-let filters = {};
+let filters = {};  // 记录搜索条件
 
-// ========== 渲染搜索栏 =====
+// ========== 渲染搜索栏及表头 =====
 function renderRecordsTable() {
     const head = document.getElementById('table-head');
     const body = document.getElementById('table-body');
@@ -363,13 +380,18 @@ function renderRecordsTable() {
   
     // 表头
     const headerRow = document.createElement('tr');
-    const displayFields = formFields.slice(0, 10);
+    const indexTh = document.createElement('th');
+    indexTh.textContent = '序号';
+    headerRow.appendChild(indexTh); // 序号列
+    const displayFields = formFields.slice(0, 10); // 只显示前10个字段
     displayFields.forEach(field => {
       const th = document.createElement('th');
       th.textContent = field.name;
       headerRow.appendChild(th);
     });
-    headerRow.appendChild(document.createElement('th')); // 操作列
+    const actionTh = document.createElement('th');
+    actionTh.textContent = '操作';
+    headerRow.appendChild(actionTh); // 操作列
     head.appendChild(headerRow);
   
     // 遍历所有字段，每个都创建对应控件
@@ -424,10 +446,12 @@ function renderRecordsTable() {
           
             const minInput = document.createElement('input');
             minInput.type = 'date';
+            minInput.title = `🔍 最早${field.name}`;
             minInput.dataset.bound = 'min';
           
             const maxInput = document.createElement('input');
             maxInput.type = 'date';
+            maxInput.title = `🔍 最晚${field.name}`;
             maxInput.dataset.bound = 'max';
           
             const updateFilter = () => {
@@ -564,6 +588,7 @@ function renderRecordsTable() {
     applyFilters();
 }
 
+// 根据搜索栏搜索条件筛选结果
 function applyFilters() {
     const filtered = records.filter(record => {
       for (const field of formFields) {
@@ -605,6 +630,9 @@ function renderTableBody(data) {
 
   data.forEach((record, index) => {
     const tr = document.createElement('tr');
+    const indexTd = document.createElement('td'); // 创建序号列
+    indexTd.textContent = index + 1;
+    tr.appendChild(indexTd);
     displayFields.forEach(field => {
       const td = document.createElement('td');
       if (field.type === 'image') {
@@ -631,9 +659,9 @@ function renderTableBody(data) {
       btn.className = `btn ${i===0?'outline':i===1?'success':'danger'} small`;
       btn.textContent = text;
       btn.onclick = () => {
-        if (text === '详情') openModal(index, false);
-        else if (text === '编辑') openModal(index, true);
-        else deleteRecord(index);
+        if (text === '详情') openModal(record.uuid, false);
+        else if (text === '编辑') openModal(record.uuid, true);
+        else deleteRecord(record.uuid);
       };
       div.appendChild(btn);
     });
@@ -644,9 +672,9 @@ function renderTableBody(data) {
 }
 
 // ========== 打开编辑弹窗 ==========
-function openModal(index, isEditing) {
-    editingIndex = index;
-    const record = records[index];
+function openModal(uuidOfSelected, isEditing) {
+    editingIndex = records.findIndex(item => item.uuid === uuidOfSelected);
+    const record = records[editingIndex];
     const modalTitle = document.getElementById('modal-title');
     const modalForm = document.getElementById('modal-form');
     const saveBtn = document.getElementById('modal-save-btn');
@@ -785,16 +813,17 @@ async function saveEditedRecord() {
     // showAllFilters = false;
     // renderRecordsTable();
     applyFilters();
-    alert('记录已更新！');
+    // alert('记录已更新！');
 }
 
-function deleteRecord(index) {
+function deleteRecord(uuidOfSelected) {
   if (!confirm('确定删除？')) return;
-  records.splice(index, 1);
+  editingIndex = records.findIndex(item => item.uuid === uuidOfSelected);
+  records.splice(editingIndex, 1);
   localStorage.setItem('records', JSON.stringify(records));
   // renderRecordsTable();
   applyFilters();
-  alert('已删除');
+  // alert('已删除');
 }
 
 // ========== 导入/导出 ==========
