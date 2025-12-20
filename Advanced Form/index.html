@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📝 高级自定义表单系统</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📝 高级自定义表单系统</h1>
+      <p>支持字段排序、字典、图片上传、搜索折叠、数据导入导出</p>
+    </header>
+
+    <!-- Tab 栏 -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="design-panel">设计表单</button>
+      <button class="tab-btn" data-tab="submit-panel">填写表单</button>
+      <button class="tab-btn" data-tab="records-panel">查看记录</button>
+      
+      <div class="spacer"></div>
+      
+      <button class="btn outline" onclick="exportData()">📤 导出数据</button>
+      <label class="btn outline file-btn">
+        📥 导入数据
+        <input type="file" id="import-file" accept=".json" hidden />
+      </label>
+    </div>
+
+    <!-- 表单设计器 -->
+    <div id="design-panel" class="panel active">
+      <div class="card">
+        <h2>🛠️ 设计表单字段</h2>
+        <div id="fields-list" class="field-list"></div>
+        <div class="field-input-group">
+          <input type="text" id="new-field-name" placeholder="字段名称（如：姓名、头像）" />
+          <select id="new-field-type">
+            <option value="text">文本</option>
+            <option value="image">图片（本地上传）</option>
+            <option value="dict">数据字典</option>
+            <option value="number">数字</option>
+            <option value="date">日期</option>
+          </select>
+          <div id="dict-input-container" style="display:none; margin-top:8px;">
+            <input type="text" id="new-field-dict" placeholder="字典项（用逗号分隔，如：男,女）" />
+          </div>
+          <button class="btn small" onclick="addField()">+ 添加字段</button>
+        </div>
+        <button class="btn full" onclick="saveFormDesign()">💾 保存表单设计</button>
+      </div>
+    </div>
+
+    <!-- 表单填写 -->
+    <div id="submit-panel" class="panel">
+      <div class="card">
+        <h2>✍️ 填写新记录</h2>
+        <form id="dynamic-form" class="form-grid"></form>
+        <button class="btn full" type="button" onclick="submitRecord()">✅ 提交记录</button>
+      </div>
+    </div>
+
+    <!-- 记录表格 -->
+    <div id="records-panel" class="panel">
+      <div class="card">
+        <h2>📊 记录列表（共 <span id="record-count">0</span> 条）</h2>
+        <div id="search-filters" class="filter-row"></div>
+        <div id="filter-controls" style="display: flex; gap: 12px; margin: 8px 0; flex-wrap: wrap;"></div>
+        <div class="table-container">
+          <table id="records-table">
+            <thead id="table-head"></thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 弹窗：编辑/详情 -->
+  <div id="modal" class="modal hidden edit-record-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">记录详情</h3>
+        <span class="close" onclick="closeModal()">&times;</span>
+      </div>
+      <div class="modal-body" id="modal-form"></div>
+      <div class="modal-footer">
+        <button class="btn outline" onclick="closeModal()">取消</button>
+        <button class="btn primary" id="modal-save-btn" onclick="saveEditedRecord()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 字段编辑弹窗容器 -->
+  <div id="edit-modal-overlay" class="modal hidden">
+    <div class="modal-content edit-dialog">
+      <div class="modal-header">
+        <h3>✏️ 编辑字段</h3>
+        <span class="close" onclick="closeEditModal()">&times;</span>
+      </div>
+      <div class="modal-body" id="edit-modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn outline" onclick="closeEditModal()">取消</button>
+        <button class="btn primary" id="confirm-edit-btn">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
