@@ -878,3 +878,4 @@ function updateRecordCount() {
 
 renderFieldList();
 updateRecordCount();
+
