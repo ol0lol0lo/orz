@@ -326,6 +326,10 @@ async function submitRecord() {
     const formData = new FormData(document.getElementById('dynamic-form'));
     const record = {};
   
+    if(formFields.length == 0){
+        alert('请先设计表单！');
+        return ;
+    }
     for (let field of formFields) {
       if (field.type === 'image') {
         const file = formData.get(field.name);
