@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>从夯到拉 排名生成器</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #faf8f3;
+      color: #1e293b;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+      background: #f1f5f9;
+      font-size: 24px;
+      font-weight: bold;
+      color: #334155;
+    }
+
+    /* 表格式主区域 */
+    .ranking-table {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      width: 100%;
+    }
+
+    .rank-row {
+      display: flex;
+      min-height: 100px;
+      transition: all 0.2s ease;
+    }
+
+    .rank-label {
+      width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      user-select: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    /* 标签颜色（鲜明） */
+    .rank-label.rank-0 { background: linear-gradient(to bottom, #dc2626, #dc2626c7); } /* 红 */
+    .rank-label.rank-1 { background: linear-gradient(to bottom, #ea580c, #ea580cc7); } /* 橙 */
+    .rank-label.rank-2 { background: linear-gradient(to bottom, #ca8a04, #ca8a04c7); } /* 黄 */
+    .rank-label.rank-3 { background: linear-gradient(to bottom, #0c9a40, #0c9a40c7); } /* 绿 */
+    .rank-label.rank-4 { background: linear-gradient(to bottom, #0f43b2, #0f43b2c7); } /* 蓝 */
+    .rank-label.rank-5 { background: linear-gradient(to bottom, #6723dc, #6723dcc7); } /* 紫 */
+    .rank-label.rank-6 { background: linear-gradient(to bottom, #4a086d, #4a086dc7); } /* 青 */
+    .rank-label.rank-7 { background: linear-gradient(to bottom, #000000, #000000c7); } /* 粉 */
+
+    .rank-content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-right: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      transition: all 0.25s ease;
+    }
+
+    /* 浅色背景（柔和） */
+    .rank-content.bg-0 { background: #fef2f2; } /* red-50 */
+    .rank-content.bg-1 { background: #fffbeb; } /* yellow-50 */
+    .rank-content.bg-2 { background: #f0fdf4; } /* green-50 */
+    .rank-content.bg-3 { background: #eff6ff; } /* blue-50 */
+    .rank-content.bg-4 { background: #f5f3ff; } /* violet-50 */
+    .rank-content.bg-5 { background: #ecfdf5; } /* emerald-50 */
+    .rank-content.bg-6 { background: #fff7ed; } /* orange-50 */
+    .rank-content.bg-7 { background: #fdf2f8; } /* rose-50 */
+
+    /* 拖入高亮效果 */
+    .rank-row.drag-target .rank-label {
+      transform: scale(1.03);
+      filter: brightness(1.1);
+    }
+    .rank-row.drag-target .rank-content {
+      border-left: 4px solid #3b82f6;
+      background: #dbeafe !important; /* 轻微高亮 */
+      border: 3px dashed #2563eb; /* 虚线边框 */
+    }
+
+    /* 图片样式 */
+    .draggable-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: move;
+      transition: transform 0.2s, box-shadow 0.2s;
+      user-select: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .draggable-img:hover {
+      transform: scale(1.06);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* 缓存区 */
+    .cache-section {
+      padding: 20px;
+      background: #f1f5f9;
+      margin-top: 16px;
+    }
+    .cache-title {
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #475569;
+    }
+    .cache-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      min-height: 60px;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    /* 按钮 */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .upload-btn {
+      background: #6366f1;
+      color: white;
+    }
+    .upload-btn:hover {
+      background: #4f46e5;
+    }
+    .export-btn {
+      background: #10b981;
+      color: white;
+      display: block;
+      margin: 20px auto;
+    }
+    .export-btn:hover {
+      background: #059669;
+    }
+    .edit-levels-btn {
+      background: #8b5cf6;
+      color: white;
+      display: block;
+      margin: 16px auto;
+    }
+    .edit-levels-btn:hover {
+      background: #7c3aed;
+    }
+
+    /* 弹窗 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 14px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal h3 {
+      margin-bottom: 16px;
+      text-align: center;
+      color: #334155;
+    }
+    .level-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .level-item input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .remove-level {
+      margin-left: 8px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .add-level-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      cursor: pointer;
+      display: block;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">从夯到拉排名生成器</div>
+
+    <!-- 表格式排序区域 -->
+    <div class="ranking-table" id="ranking-table"></div>
+
+    <!-- 功能按钮 -->
+    <button class="btn edit-levels-btn" onclick="openEditLevelsModal()">⚙️ 编辑等级体系</button>
+
+    <!-- 缓存区 -->
+    <div class="cache-section">
+      <div class="cache-title">缓存区（上传后图片暂存于此）</div>
+      <div class="cache-area" id="cache-area"></div>
+      <input type="file" id="file-input" accept="image/*" multiple style="display:none;" />
+      <button class="btn upload-btn" onclick="document.getElementById('file-input').click()">上传图片</button>
+    </div>
+
+    <!-- 导出按钮 -->
+    <button class="btn export-btn" onclick="exportImage()">导出完整排名图</button>
+  </div>
+
+  <!-- 全局编辑弹窗 -->
+  <div class="modal" id="edit-levels-modal">
+    <div class="modal-content">
+      <h3>自定义等级体系</h3>
+      <div id="levels-container"></div>
+      <button class="add-level-btn" onclick="addLevelInput()">+ 添加等级</button>
+      <div class="modal-buttons">
+        <button style="background:#10b981;color:white;" onclick="saveLevels(true)">保存</button>
+        <button style="background:#64748b;color:white;" onclick="saveLevels(false)">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 初始等级
+    let ranks = ["夯", "顶尖", "人上人", "NPC", "拉完了"];
+
+    // 渲染表格式排序区域
+    function renderRankingTable() {
+      const table = document.getElementById("ranking-table");
+      table.innerHTML = '';
+
+      ranks.forEach((name, i) => {
+        const row = document.createElement('div');
+        row.className = 'rank-row';
+        row.dataset.index = i;
+
+        const label = document.createElement('div');
+        label.className = `rank-label rank-${i % 8}`;
+        label.textContent = name;
+
+        const content = document.createElement('div');
+        content.className = `rank-content bg-${i % 8}`;
+        content.dataset.rank = i;
+
+        row.appendChild(label);
+        row.appendChild(content);
+        table.appendChild(row);
+      });
+
+      setupDragDrop();
+    }
+
+    // 打开编辑等级弹窗
+    function openEditLevelsModal() {
+      const container = document.getElementById('levels-container');
+      container.innerHTML = '';
+      ranks.forEach(name => {
+        container.appendChild(createLevelItem(name));
+      });
+      document.getElementById('edit-levels-modal').style.display = 'flex';
+    }
+
+    function createLevelItem(name = '') {
+      const div = document.createElement('div');
+      div.className = 'level-item';
+      div.innerHTML = `
+        <input type="text" value="${name}" placeholder="输入等级名称" maxlength="12" />
+        <button class="remove-level" onclick="this.parentElement.remove()">×</button>
+      `;
+      return div;
+    }
+
+    function addLevelInput() {
+      if (document.querySelectorAll('.level-item').length >= 8) {
+        alert('最多支持 8 个等级');
+        return;
+      }
+      document.getElementById('levels-container').appendChild(createLevelItem());
+    }
+
+    function saveLevels(confirm) {
+      const modal = document.getElementById('edit-levels-modal');
+      modal.style.display = 'none';
+      if (!confirm) return;
+
+      const inputs = document.querySelectorAll('#levels-container .level-item input');
+      const newRanks = Array.from(inputs)
+        .map(el => el.value.trim())
+        .filter(v => v);
+
+      if (newRanks.length < 2) {
+        alert('至少需要 2 个有效等级');
+        openEditLevelsModal();
+        return;
+      }
+
+      ranks = newRanks;
+      renderRankingTable();
+    }
+
+    // 拖拽逻辑
+    function setupDragDrop() {
+      const cacheArea = document.getElementById('cache-area');
+      const rankContents = document.querySelectorAll('.rank-content');
+
+      // 重置所有高亮
+      document.querySelectorAll('.rank-row').forEach(r => r.classList.remove('drag-target'));
+
+      [cacheArea, ...rankContents].forEach(area => {
+        area.addEventListener('dragover', e => {
+          e.preventDefault();
+          // 移除其他高亮
+          document.querySelectorAll('.rank-row').forEach(r => r.classList.remove('drag-target'));
+          // 当前区域高亮
+          const row = area.closest('.rank-row');
+          if (row) row.classList.add('drag-target');
+        });
+
+        area.addEventListener('dragleave', () => {
+          // 不立即移除，避免闪烁
+        });
+
+        area.addEventListener('drop', e => {
+          e.preventDefault();
+          document.querySelectorAll('.rank-row').forEach(r => r.classList.remove('drag-target'));
+          const imgId = e.dataTransfer.getData('text');
+          const img = document.getElementById(imgId);
+          if (img && !area.contains(img)) {
+            area.appendChild(img);
+          }
+        });
+      });
+
+      document.querySelectorAll('.draggable-img').forEach(img => {
+        img.draggable = true;
+        img.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text', img.id);
+        });
+      });
+    }
+
+    // 上传图片
+    document.getElementById('file-input').addEventListener('change', e => {
+      const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+      const cacheArea = document.getElementById('cache-area');
+      files.forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.className = 'draggable-img';
+          img.id = 'img-' + Date.now() + '-' + i;
+          cacheArea.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+      setTimeout(setupDragDrop, 100);
+    });
+
+    // 导出仅排序区域
+    async function exportImage() {
+      const rankingEl = document.getElementById('ranking-table');
+      const canvas = await html2canvas(rankingEl, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+      const link = document.createElement('a');
+      link.download = '从夯到拉排名.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // 初始化
+    window.onload = () => {
+      renderRankingTable();
+    };
+  </script>
+</body>
+</html>
