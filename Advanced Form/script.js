@@ -46,7 +46,7 @@ function addField() {
     if (dictItems.length === 0) return alert('字典项不能为空');
   }
 
-  formFields.push({ name, type, dictItems });
+  formFields.push({ name, type, ...(type === 'dict' ? { dictItems } : {}) });
   renderFieldList();
   document.getElementById('new-field-name').value = '';
   document.getElementById('new-field-dict').value = '';
@@ -194,7 +194,7 @@ function openEditModal(index) {
         if (dictItems.length === 0) throw new Error('字典项无效');
       }
 
-      formFields[index] = { name, type, dictItems };
+      formFields[index] = { name, type, ...(type === 'dict' ? { dictItems } : {}) };
       localStorage.setItem('formFields', JSON.stringify(formFields));
       renderFieldList();
       closeEditModal();
